@@ -22,6 +22,16 @@ const productService = {
             errorHandler({ code: 'ERROR_UPDATE_STOCK_PRODUCT', message: error.message }, req, res);
             
         }
+    },
+    // Función para verificar si un producto pertenece a un usuario
+    productBelongsToUser: async (productId, userId) => {
+        try {
+            const product = await ProductDAO.getById(productId);
+            return product.owner === userId;
+        } catch (error) {
+            console.error(`Error al verificar la propiedad del producto (${productId}) para el usuario (${userId}):`, error);
+            errorHandler({ code: 'INTERNAL_SERVER_ERROR', message: error.message }, req, res);
+        }
     }
 };
 
