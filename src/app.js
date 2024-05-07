@@ -12,7 +12,11 @@ import passport from "passport";
 import initializePassport from "./config/passport.config.js"
 import {environment} from "./config/config.js"
 import { generateProducts } from './services/mockService.js';
-import { addLogger} from "./utils/logger.js";
+import { logger, addLogger} from "./utils/logger.js";
+import sessionController from "./controllers/SessionControllers.js";
+
+/* import { transport } from "winston"; */
+
 
 const app = express();
 
@@ -36,6 +40,7 @@ db.once("open", function () {
 });
 
 /* middlewares */
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("./src/public"));
@@ -57,8 +62,13 @@ app.use("/api/carts", routercarts)
 app.use("/api/sessions", routerSession)
 app.use("/", viewsRouter)
 app.use("/loggerTest", routerLogger)
+app.use("/mail", routerSession)
 
-
+/* para probar si manda la cookie */
+/* app.get('/ruta', (req, res) => {
+    res.cookie('nombreCookie', 'valorCookie');
+    res.send('Cookie establecida correctamente');
+}); */
 // Home del sitio
 app.get("/", (req, res) => {
     res.redirect("/home");
@@ -69,6 +79,12 @@ app.get("/loggerTest", (req, res) => {
 }); 
 app.get("/home", (req, res) => {
     res.render("home", {
+        style: "style.css"
+    });
+});
+
+app.get('/mail', (req, res) => {
+    res.render("mail", {
         style: "style.css"
     });
 });

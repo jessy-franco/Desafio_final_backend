@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import errorHandler from "../middlewares/errorMiddlewares.js"
 
 export const isAdmin = (req, res, next) => {
+    console.log("Cookies:", req.cookies);
     // Verificar si req.cookies está definido y contiene el token jwt
     if (!req.cookies || !req.cookies.jwt) {
         /* return res.status(403).json({ message: 'Acceso no autorizado, token inválido' }); */

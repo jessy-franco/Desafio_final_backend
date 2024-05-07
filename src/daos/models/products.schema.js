@@ -31,6 +31,10 @@ const productSchema = new mongoose.Schema({
         type: [String],
          // Cambiado a un array de String
     },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users' // Referencia al modelo de usuario
+    }
 });
 productSchema.plugin(mongoosePaginate);
 const Product = mongoose.model(/* "Product", */productCollections, productSchema);

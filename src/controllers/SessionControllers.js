@@ -3,7 +3,8 @@ import UserRepository from '../repositories/userRepository.js';
 import {isAdmin} from "../middlewares/auth.middleware.js"
 import * as validators from './validators.js';
 import passport from "passport";
-
+import generateTokenForPasswordReset from "../utils/forgotPassword.js"
+import transport from "../utils/nodemailer.js";
 
 
 const userRepository = new UserRepository();
@@ -139,7 +140,91 @@ const sessionController = {
             // Enviar una respuesta indicando si el usuario es un administrador o no
             res.json({ isAdmin });
         });
-    }
+    },
+    
+    /* forgotPassword: async(req, res)=>{
+        try {
+            const token = generateTokenForPasswordReset(); // Generar token para el enlace de recuperación
+    
+            const mailOptions = {
+                from: 'SucuRex@gmail.com',
+                to:  req.body.email ,
+                subject: 'Recuperación de Contraseña',
+                html: `
+                <div>
+                Haga clic en el siguiente enlace para restablecer su contraseña: <a href="http://tudominio.com/resetPassword/${token}">Restablecer Contraseña</a>. El enlace expirará en 1 hora.
+                <img src="cid:dinoLogin"/>
+                </div>`,
+                attachments:[{
+                    filename:"dinoLogin.jpg",
+                    path:"/img/imgPages/dinoLogin.jpg",
+                    cid:"dinoLogin"
+                }]
+            };
+    
+            await transport.sendMail(mailOptions);
+    
+            res.send(`<script>alert('Correo de recuperación de contraseña enviado exitosamente.');</script>`);
+        } catch (error) {
+            console.error('Error al enviar el correo de recuperación de contraseña:', error);
+            res.send(`<script>alert('Error al enviar el correo de recuperación de contraseña.');</script>`);
+        }
+    } */
+    forgotPassword: async(req, res) => {
+        try {
+            // Verifica si se proporciona un correo electrónico
+            const email = req.body.email;
+            console.log('Correo electrónico recibido:', email);
+            if (!email || !email.trim()) {
+                return res.status(400).send('Por favor, proporciona una dirección de correo electrónico válida.');
+            }
+    
+            // Genera el token para restablecer la contraseña
+            const token = generateTokenForPasswordReset();
+    
+            // Configura las opciones del correo electrónico
+            const mailOptions = {
+                from: 'SucuRex@gmail.com',
+                to: email,
+                subject: 'Recuperación de Contraseña',
+                html: `
+                <div>
+                    Haga clic en el siguiente enlace para restablecer su contraseña: <a href="http://tudominio.com/resetPassword/${token}">Restablecer Contraseña</a>. El enlace expirará en 1 hora.
+                    <img src="cid:dinoLogin"/>
+                </div>`,
+                attachments: [{
+                    filename: "dinoLogin.jpg",
+                    path: "/img/imgPages/dinoLogin.jpg",
+                    cid: "dinoLogin"
+                }]
+            };
+            await transport.sendMail(mailOptions);
+            
+            res.send('Correo de recuperación de contraseña enviado exitosamente.');
+        } catch (error) {
+            console.error('Error al enviar el correo de recuperación de contraseña:', error);
+            res.send('Error al enviar el correo de recuperación de contraseña.');
+        }
+    },
+    
+    toggleUserRole: async (req, res) => {
+        try {
+            const userId = req.params.uid;
+            const newRole = req.body.role; // Puede ser 'user' o 'premium'
+    
+            // Verificar si el nuevo rol es válido
+            if (newRole !== 'user' && newRole !== 'premium') {
+                return res.status(400).json({ message: 'Rol de usuario no válido.' });
+            }
+    
+            // Actualizar el rol del usuario en la base de datos
+            await userService.updateUserRole(userId, newRole);
+            res.status(200).json({ message: `Rol de usuario actualizado a ${newRole}.` });
+        } catch (error) {
+            console.error('Error al cambiar el rol de usuario:', error);
+            errorHandler({ code: 'TOGGLE_USER_ROLE_ERROR', message: error.message }, req, res);
+        }
+    },
     
 };
 

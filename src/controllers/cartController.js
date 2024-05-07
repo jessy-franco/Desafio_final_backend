@@ -37,8 +37,21 @@ const cartsController = {
             const cartId = req.params.cid;
             const productId = req.params.pid;
             const quantity = req.body.quantity;
-            await cartRepository.addProductToCart(cartId, productId, quantity);
-            res.redirect("/api/cart/" + cartId);
+
+            // Obtener el usuario actual desde req.user
+            const currentUser = req.user;
+            // Verificar si el producto pertenece al usuario actual
+        const productBelongsToUser = await productService.productBelongsToUser(productId, currentUser);
+
+            // Verificar si el usuario es premium
+        if (currentUser.premium === true && productBelongsToUser) {
+            return res.status(403).json({ message: 'No puedes agregar tu propio producto al carrito.' });
+        }
+
+        // Si el producto no pertenece al usuario premium, agregarlo al carrito
+        await cartRepository.addProductToCart(cartId, productId, quantity);
+        res.redirect("/api/cart/" + cartId);
+            
         } catch (error) {
             console.error("Error al agregar producto al carrito:", error);
             /* res.status(500).send("Error del servidor"); */

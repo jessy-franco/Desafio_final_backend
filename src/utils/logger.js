@@ -13,8 +13,8 @@ const customLevelsOptions = {
         debug: 5,
     }, 
     colors: {
-        fatal: "red",
-        error: "orange",
+        fatal: "brightRed",
+        error: "red",
         warning: "yellow",
         info: "blue",
         http: "magenta",
@@ -22,7 +22,7 @@ const customLevelsOptions = {
     }
 }
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
     levels: customLevelsOptions.levels,
     transports: [
         new winston.transports.Console({

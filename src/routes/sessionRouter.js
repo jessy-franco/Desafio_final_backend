@@ -12,4 +12,6 @@ router.get("/github", sessionController.authenticateWithGithub);
 router.get("/githubcallback", sessionController.githubCallback);
 router.get("/logout/github", sessionController.logoutGithub);
 router.get('/check-admin', sessionController.check);
+router.get('/mail', sessionController.forgotPassword);
+router.put('/premium/:uid',sessionController.toggleUserRole);
 export default router;

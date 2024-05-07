@@ -21,6 +21,7 @@ const errorDictionary = {
     ERROR_CREATE_TICKET: 'Error al crear un nuevo ticket',
     ERROR_UPDATE_STOCK_PRODUCT:'Error al actualizar el stock del producto',
     ERROR_TOKEN:'token invalido, error',
+    UNAUTHORIZED:'Usuario no autorizado para esta tarea'
 };
 
 function errorHandler(err, req, res, next) {
@@ -30,7 +31,7 @@ function errorHandler(err, req, res, next) {
     const logger = req.logger;
 
     /* Registra el error  */
-    logger.error(`Error: ${errorMessage}`, { error: err });
+    logger.error(`Error: ${errorMessage}`, {error: 'Error registrado' });
 
     /* Enviar una respuesta según el entorno */ 
     if (process.env.NODE_ENV === 'prod') {

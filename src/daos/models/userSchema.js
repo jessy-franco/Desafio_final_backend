@@ -26,6 +26,10 @@ const UsersSchema = new mongoose.Schema({
         required:true,
         default: "user"
     },
+    premium: {
+        type: Boolean,
+        default: false // Por defecto, el usuario no es premium
+    },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Cart" // Referencia al modelo de carrito
