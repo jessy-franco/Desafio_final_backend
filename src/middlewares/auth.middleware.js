@@ -6,9 +6,10 @@ export const isAdmin = (req, res, next) => {
     console.log("Cookies:", req.cookies);
     // Verificar si req.cookies está definido y contiene el token jwt
     if (!req.cookies || !req.cookies.jwt) {
+        console.log("tooo mal")
         /* return res.status(403).json({ message: 'Acceso no autorizado, token inválido' }); */
-        errorHandler({ code: 'ERROR_TOKEN', message: 'Acceso no autorizado, token inválido' }, req, res);
-        return;
+        /* errorHandler({ code: 'ERROR_TOKEN', message: 'Acceso no autorizado, token inválido' }, req, res);
+        return; */
     }
     // Obtener el token JWT del encabezado de autorización
     const token = req.cookies.jwt

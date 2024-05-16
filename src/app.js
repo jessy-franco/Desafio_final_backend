@@ -5,7 +5,6 @@ import  loggerRouter from "./routes/loggerRouter.js"
 import { engine } from 'express-handlebars';
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-/* import MongoStore from "connect-mongo"; */
 import router from "./routes/sessionRouter.js"
 import viewsRouter from "./routes/viewsRouter.js"
 import passport from "passport";
@@ -13,9 +12,11 @@ import initializePassport from "./config/passport.config.js"
 import {environment} from "./config/config.js"
 import { generateProducts } from './services/mockService.js';
 import { logger, addLogger} from "./utils/logger.js";
-import sessionController from "./controllers/SessionControllers.js";
+import swaggerUi from "swagger-ui-express";
+/* import __dirname from "./utils/utils.js" */
 
-/* import { transport } from "winston"; */
+import swaggerJSDoc from "swagger-jsdoc";
+
 
 
 const app = express();
@@ -38,6 +39,23 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
     console.log("Connected to MongoDB Atlas");
 });
+ /* documentacion Swagger */
+
+const swaggerOptions = {
+    definition:{
+        openapi: '3.0.1',
+        info:{
+            title: "Documentacion ecommerce SucuRex",
+            description: "Pensado para documentar los procesos de productos y carrito",
+        }
+    },
+    apis: ["./src/public/docs/**/*.yaml"]
+}
+
+const specs = swaggerJSDoc(swaggerOptions);
+
+app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(specs));
+
 
 /* middlewares */
 
@@ -45,8 +63,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("./src/public"));
 app.use(cookieParser("cookieS3cR3tC0D3"));
-initializePassport();
 app.use(passport.initialize());
+initializePassport();
+
 app.use(addLogger)
 
 // Routers

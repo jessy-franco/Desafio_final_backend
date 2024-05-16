@@ -12,3 +12,5 @@ EXPOSE 8080
 
 
 CMD ["npm", "start"]
+
+RUN npm rebuild bcrypt --build-from-source

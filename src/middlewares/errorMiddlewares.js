@@ -31,7 +31,7 @@ function errorHandler(err, req, res, next) {
     const logger = req.logger;
 
     /* Registra el error  */
-    logger.error(`Error: ${errorMessage}`, {error: 'Error registrado' });
+    /* logger.error(`Error: ${errorMessage}`, {error: 'Error registrado' }); */
 
     /* Enviar una respuesta según el entorno */ 
     if (process.env.NODE_ENV === 'prod') {
