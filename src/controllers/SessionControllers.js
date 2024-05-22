@@ -171,19 +171,20 @@ const sessionController = {
         }
     } */
     forgotPassword: async(req, res) => {
-        try {
+        /* try {
             // Verifica si se proporciona un correo electrónico
             const email = req.body.email;
             console.log('Correo electrónico recibido:', email);
             if (!email || !email.trim()) {
                 return res.status(400).send('Por favor, proporciona una dirección de correo electrónico válida.');
             }
-    
+     */
             // Genera el token para restablecer la contraseña
             const token = generateTokenForPasswordReset();
     
             // Configura las opciones del correo electrónico
-            const mailOptions = {
+            
+            const result = await transport.sendMail({
                 from: 'SucuRex@gmail.com',
                 to: email,
                 subject: 'Recuperación de Contraseña',
@@ -197,14 +198,13 @@ const sessionController = {
                     path: "/img/imgPages/dinoLogin.jpg",
                     cid: "dinoLogin"
                 }]
-            };
-            await transport.sendMail(mailOptions);
+            });
             
-            res.send('Correo de recuperación de contraseña enviado exitosamente.');
-        } catch (error) {
+            res.send({status:"success",result: "Email sent"});
+        /* } catch (error) {
             console.error('Error al enviar el correo de recuperación de contraseña:', error);
             res.send('Error al enviar el correo de recuperación de contraseña.');
-        }
+        } */
     },
     
     toggleUserRole: async (req, res) => {

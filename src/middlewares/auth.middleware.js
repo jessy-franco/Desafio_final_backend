@@ -13,6 +13,7 @@ export const isAdmin = (req, res, next) => {
     }
     // Obtener el token JWT del encabezado de autorización
     const token = req.cookies.jwt
+    console.log("token:",req.cookies.jwt)
 
     // Verificar el token
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {

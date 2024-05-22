@@ -23,6 +23,7 @@ console.log(`esto es el tipo: ${envType}`)
 export const environment = {
     port: process.env.PORT || 3000, // Puerto predeterminado 3000 si no está definido
     mongoUrl: process.env.MONGO_URL,
+    mongoUrlTest: process.env.MONGO_URL_TEST,
     adminName: process.env.ADMIN_EMAIL,
     adminPassword: process.env.ADMIN_PASSWORD,
     jwtSecret: process.env.JWT_SECRET,

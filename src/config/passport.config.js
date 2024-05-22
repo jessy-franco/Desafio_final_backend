@@ -3,16 +3,19 @@ import UsersDao from "../daos/userDao.js"
 import passport from "passport"
 import jwt from "passport-jwt"
 
+
 const JwtStrategy = jwt.Strategy
-const initializePassport = () => {
-    passport.use("jwt", new JwtStrategy({
-        jwtFromRequest: (req) => {
-            var token = null;
+const ExtractJWT = jwt.ExtractJwt;
+const cookieExtractor = req =>{
+    let token = null;
             if (req && req.signedCookies) {
                 token = req.signedCookies['jwt'];
             }
             return token;
-        },
+}
+const initializePassport = () => {
+    passport.use("jwt", new JwtStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         secretOrKey: "secret_jwt"
     }, async function (jwt_payload, done) {
         let userId = jwt_payload.id;

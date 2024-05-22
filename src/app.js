@@ -49,7 +49,7 @@ const swaggerOptions = {
             description: "Pensado para documentar los procesos de productos y carrito",
         }
     },
-    apis: ["./src/public/docs/**/*.yaml"]
+    apis: ["./src/docs/**/*.yaml"]
 }
 
 const specs = swaggerJSDoc(swaggerOptions);

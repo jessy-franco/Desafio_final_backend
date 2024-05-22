@@ -1,12 +1,12 @@
 {
   "type": "module",
-  "name": "desafio_8backend",
+  "name": "desafio_test",
   "version": "1.0.0",
-  "description": "Desafio8-backEnd",
+  "description": "desafio_test",
   "main": "app.js",
   "scripts": {
     "start": "nodemon src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require @babel/register"
   },
   "author": "jesica franco",
   "license": "ISC",
@@ -37,14 +37,26 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
+    "@babel/register": "^7.23.7",
+    "chai": "^5.1.1",
+    "mocha": "^10.4.0",
+    "nodemon": "^3.0.3",
+    "sinon": "^18.0.0",
+    "supertest": "^7.0.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jessy-franco/desafio_7_Backend"
+    "url": "git+https://github.com/jessy-franco/DesafioTest_backEnd"
   },
   "bugs": {
-    "url": "https://github.com/jessy-franco/desafio_7_Backend/issues"
+    "url": "https://github.com/jessy-franco/DesafioTest_backEnd/issues"
   },
-  "homepage": "https://github.com/jessy-franco/desafio_7_Backend#readme"
+  "homepage": "https://github.com/jessy-franco/DesafioTest_backEnd#readme"
 }
