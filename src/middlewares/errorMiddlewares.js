@@ -27,18 +27,20 @@ const errorDictionary = {
 function errorHandler(err, req, res, next) {
     const errorCode = err.code || 'UNKNOWN_ERROR';
     const errorMessage = errorDictionary[errorCode] || 'Error desconocido.';
+    const status = err.status || 500;
+
     /* Obtiene el logger */
     const logger = req.logger;
 
     /* Registra el error  */
-    /* logger.error(`Error: ${errorMessage}`, {error: 'Error registrado' }); */
+    logger.error(`Error: ${errorMessage}`, {error: 'Error registrado' });
 
     /* Enviar una respuesta según el entorno */ 
     if (process.env.NODE_ENV === 'prod') {
-        res.status(500).json({ error: 'Error desconocido.' });
+        res.status(status).json({ error: 'Error desconocido.' });
         logger.error('Este es un mensaje de error');
     } else {
-        res.status(500).json({ error: errorMessage });
+        res.status(status).json({ error: errorMessage });
         logger.error('Este es un mensaje de error');
     }
 }

@@ -1,54 +1,54 @@
+
+
 {{#if user}}
 <section class="coso">
     <div>
-        <h1>¡¡¡Bienvenidx {{user.first_name}} {{user.last_name}}!!!</h1>
+        <h1>¡¡¡Bienvenidx {{user.firstName}} {{user.lastName}} Rol: {{user.role}}!!!</h1>
         <p>Email: {{user.email}}</p>
         <img src="/img/imgPages/dinoJardinero.jpg" alt="imagen de bienvenida" width="50%" height="55%">
         <div><a href="/api/sessions/logout"><button class="custom-button">Cerrar Sesión</button></a></div>
-
     </div>
 </section>
+
 {{#if isAdmin}}
 <div>
-    <h1>¡¡¡Bienvenidx {{user.first_name}} {{user.last_name}}!!!</h1>
-    <p>Email: {{user.email}}</p>
-    <img src="/img/imgPages/t-rex.jpg" alt="imagen de bienvenida" width="50%" height="55%">
-    <div><a href="/api/sessions/logout"><button class="custom-button">Cerrar Sesión</button></a></div>
     <p><a href="/api/products/new"><button class="custom-button">Agregar producto (admin)</button></a></p>
 </div>
 {{/if}}
-
-<h2>Nuestros productos</h2>
 {{/if}}
 
+<h2>Nuestros productos</h2>
 <section class="productsCards">
-    {{#if pagination.isValid}}
-    {{#each products}}
-    <div class="newCard">
-        <div class="card-img">
-            <img src="{{this.thumbnails}}" alt="Product img" width="120px" height="150px">
+    {{#if pagination}}
+        {{#if pagination.isValid}}
+        {{#each products}}
+        <div class="newCard">
+            <div class="card-img">
+                <img src="{{this.thumbnails}}" alt="Product img" width="120px" height="150px">
+            </div>
+            <div class="detailContainer">
+                <h2>{{this.title}}</h2>
+                <p>{{this.description}}</p>
+                <p class="priceTag">Precio: {{this.price}}</p>
+                <a href="/api/products/{{this._id}}"><button class="custom-button">Ver mas</button></a>
+            </div>
         </div>
-        <div class="detailContainer">
-            <h2>{{this.title}}</h2>
-            <p>{{this.description}}</p>
-            <p class="priceTag">Precio: {{this.price}}</p>
-            <a href="/api/products/{{this._id}}"><button class="custom-button">Ver mas</button></a>
+        {{/each}}
+        <div class="display">
+            {{#if pagination.prevLink}}
+            <a href="{{pagination.prevLink}}">&lt;&lt; Anterior</a>
+            {{/if}}
+            &nbsp;
+            {{pagination.currentPage}}
+            &nbsp;
+            {{#if pagination.nextLink}}
+            <a href="{{pagination.nextLink}}">Siguiente &gt;&gt;</a>
+            {{/if}}
         </div>
-    </div>
-    {{/each}}
-    <div class="display">
-        {{#if pagination.prevLink}}
-        <a href="{{pagination.prevLink}}">
-            << Anterior</a>
-                {{/if}}
-                &nbsp;
-                {{pagination.currentPage}}
-                &nbsp;
-                {{#if pagination.nextLink}}
-                <a href="{{pagination.nextLink}}">Siguiente >></a>
-                {{/if}}
-    </div>
+        {{else}}
+        <h1>No hay productos para mostrar</h1>
+        {{/if}}
     {{else}}
-    <h1>No hay productos para mostrar</h1>
+    <h1>Error: No se pudo cargar la paginación.</h1>
     {{/if}}
 </section>

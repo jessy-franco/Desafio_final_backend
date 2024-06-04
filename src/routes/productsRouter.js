@@ -2,12 +2,15 @@ import express from "express";
 import productsController from "../controllers/productsController.js";
 import { isAdmin } from "../middlewares/auth.middleware.js"
 
+
 const productsRouter = express.Router();
 
 /* ver todos los productos (Funcional) */
 productsRouter.get("/", productsController.getAllProducts);
 
-productsRouter.get("/new", isAdmin, (req, res) => {
+
+/* En ruta New, comprueba si es admin directamente en sessionController, si no es admin no habilita la vista de la ruta */
+productsRouter.get("/new", (req, res) => {
     res.render("new-product", {
         style: "new.css",
     });

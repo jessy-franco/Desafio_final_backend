@@ -1,6 +1,6 @@
 import { CartManager } from "../daos/cartDao.js";
 import errorHandler from "../middlewares/errorMiddlewares.js"
-
+import {logger} from "../utils/logger.js"
 const cartManager = new CartManager();
 
 const cartRepository = {
@@ -8,7 +8,7 @@ const cartRepository = {
         try {
             return await cartManager.createCart();
         } catch (error) {
-            errorHandler({ code: 'ERROR_CREATE_CART', message: error.message }, req, res);
+            logger.error({ message: error.message });
         }
     },
 
@@ -28,7 +28,7 @@ const cartRepository = {
         try {
             await cartManager.addProductToCart(cartId, productId, quantity);
         } catch (error) {
-            errorHandler({ code: 'ADD_TO_CART_ERROR', message: error.message }, req, res);
+            logger.error({ message: error.message })
         }
     },
 

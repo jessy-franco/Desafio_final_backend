@@ -22,6 +22,7 @@ console.log(`esto es el tipo: ${envType}`)
 // Exportar las variables de entorno configuradas
 export const environment = {
     port: process.env.PORT || 3000, // Puerto predeterminado 3000 si no está definido
+    HOST: process.env.HOST,
     mongoUrl: process.env.MONGO_URL,
     mongoUrlTest: process.env.MONGO_URL_TEST,
     adminName: process.env.ADMIN_EMAIL,

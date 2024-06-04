@@ -1,33 +1,62 @@
-import GitHubStrategy from "passport-github2" 
-import UsersDao from "../daos/userDao.js"
+import GitHubStrategy from "passport-github2"
 import passport from "passport"
-import jwt from "passport-jwt"
+import { logger } from "../utils/logger.js"
+import LocalStrategy from "passport-local";
+import {isValidPassword} from "../utils/utils.js"
+import UserRepository from '../repositories/userRepository.js';
+import UsersDao from "../daos/userDao.js"
 
 
-const JwtStrategy = jwt.Strategy
-const ExtractJWT = jwt.ExtractJwt;
-const cookieExtractor = req =>{
-    let token = null;
-            if (req && req.signedCookies) {
-                token = req.signedCookies['jwt'];
-            }
-            return token;
-}
+const userRepository = new UserRepository();
+
+
 const initializePassport = () => {
-    passport.use("jwt", new JwtStrategy({
-        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: "secret_jwt"
-    }, async function (jwt_payload, done) {
-        let userId = jwt_payload.id;
-        let user = await UsersDao.getUserByID(userId);
-        if (user) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-        }
-    }))
+    
+    /* funciones de serializacion y deserializacion */
+        passport.serializeUser((user, done) => {
+            done(null, user._id);
+        });
+    
+        passport.deserializeUser(async (id, done) => {
+            try {
+                const user = await userRepository.getUserById(id);
+                done(null, user);
+            } catch (error) {
+                done(error);
+            }
+        });
+        
+        passport.use(
+            "login",
+            new LocalStrategy({ usernameField: "email", passwordField: "password" }, async (username, password, done) => {
+                try {
+                    const user = await userRepository.getUserByEmail(username, true);
+                    console.log("supone credenciales",user) /* lo trae a user "supone credenciales UserDTO {
+                        id: new ObjectId('66041606c8e8474287537eaa'),
+                        email: 'TeteunPliskerias@gmail.com',
+                        firstName: 'tete',
+                        lastName: 'pliskerias',
+                        role: 'admin'
+                      }" */
+                    
+                    if (!user) {
+                        console.log("El usuario no existe");
+                        return done(null, false);
+                    }
+                    if (!isValidPassword(password, user.password)) {
+                        console.log("Contraseña inválida");
+                        return done(null, user);
+                    }
 
-
+                    console.log("Usuario autenticado con éxito");
+                    return done(null, user);
+                } catch (error) {
+                    console.log("Error en la autenticación:", error);
+                    return done(error);
+                }
+            })
+        );
+    };
     /* sesion con github */
     passport.use("github", new GitHubStrategy({
         clientID: "Iv1.8aacf63cf9714cdc",
@@ -42,7 +71,7 @@ const initializePassport = () => {
                 return done(null, false);
             }
 
-            let user = await UsersDao.getUserByEmail(profile._json.email);
+            let user = await userRepository.getUserByEmail(profile._json.email);
             if (!user) {
                 let newUser = {
                     first_name: profile._json.name,
@@ -65,5 +94,9 @@ const initializePassport = () => {
 
 
     }))
-}
+    
+
+
+
+
 export default initializePassport;

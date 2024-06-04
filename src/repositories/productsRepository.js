@@ -1,4 +1,5 @@
 import ProductDAO from "../daos/productsDao.js";
+import { logger } from "../utils/logger.js";
 import errorHandler from "../middlewares/errorMiddlewares.js"
 
 class ProductRepository {
@@ -14,7 +15,7 @@ class ProductRepository {
 
             return products;
         } catch (error) {
-            errorHandler({ code: 'INTERNAL_SERVER_ERROR', message: error.message }, req, res);
+            logger.error("No se puede ver los productos",  info)
         }
     }
 

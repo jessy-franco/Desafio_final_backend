@@ -1,9 +1,9 @@
 import ProductDAO from '../daos/productsDao.js'; 
 import errorHandler from "../middlewares/errorMiddlewares.js"
+import { logger } from "../utils/logger.js"
 
 const productService = {
-    // Función para obtener un producto por su ID
-    getProductById: async (productId) => {
+    getProductById: async (productId, req, res) => {
         try {
             const product = await ProductDAO.getById(productId);
             return product;
@@ -13,20 +13,21 @@ const productService = {
         }
     },
 
-    // Función para actualizar el stock de un producto
-    updateProductStock: async (productId, newStock) => {
+    updateProductStock: async (productId, newStock, req, res) => {
         try {
             await ProductDAO.updateStock(productId, newStock);
         } catch (error) {
             console.error(`Error al actualizar el stock del producto (${productId}):`, error);
             errorHandler({ code: 'ERROR_UPDATE_STOCK_PRODUCT', message: error.message }, req, res);
-            
         }
     },
-    // Función para verificar si un producto pertenece a un usuario
-    productBelongsToUser: async (productId, userId) => {
+
+    productBelongsToUser: async (productId, userId, req, res) => {
         try {
             const product = await ProductDAO.getById(productId);
+            if (!product) {
+                logger.error('Product not found');
+            }
             return product.owner === userId;
         } catch (error) {
             console.error(`Error al verificar la propiedad del producto (${productId}) para el usuario (${userId}):`, error);

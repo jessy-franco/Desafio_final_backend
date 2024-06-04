@@ -22,13 +22,10 @@ const UsersSchema = new mongoose.Schema({
         required: true
     },
     role: {
-        type:String,
-        required:true,
-        default: "user"
-    },
-    premium: {
-        type: Boolean,
-        default: false // Por defecto, el usuario no es premium
+        type: String,
+        required: true,
+        enum: ["admin", "user","premium"],
+        default: "user",
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,

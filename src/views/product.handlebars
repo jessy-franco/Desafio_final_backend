@@ -20,3 +20,25 @@
 
 <script src="/js/frontendCart.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    document.getElementById('add-to-cart-btn').addEventListener('click', async function(event) {
+        const productId = this.getAttribute('data-product-id');
+        const response = await fetch('/api/carts/${cart}/products/:' + productId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ quantity: 1 }) 
+        });
+
+        if (response.ok) {
+            swal("Producto agregado al carrito!", {
+                icon: "success",
+            });
+        } else {
+            swal("Error al agregar producto al carrito", {
+                icon: "error",
+            });
+        }
+    });
+</script>

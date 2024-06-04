@@ -12,7 +12,7 @@ viewsRouter.get("/register", (req,res)=>{
 
 viewsRouter.get("/login", (req, res) => {
     // Verificar si hay un token JWT en las cookies
-    if (req.signedCookies.jwt) {
+    if (req.session.user) {
         // Redirigir al usuario si está autenticado
         return res.redirect("/api/products?inicioSesion=true");
     }

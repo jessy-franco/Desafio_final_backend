@@ -1,7 +1,7 @@
 import express from "express";
 import productsRouter from "./routes/productsRouter.js"
-import  cartsRouter from "./routes/cartsRouter.js"
-import  loggerRouter from "./routes/loggerRouter.js"
+import cartsRouter from "./routes/cartsRouter.js"
+import loggerRouter from "./routes/loggerRouter.js"
 import { engine } from 'express-handlebars';
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
@@ -9,22 +9,30 @@ import router from "./routes/sessionRouter.js"
 import viewsRouter from "./routes/viewsRouter.js"
 import passport from "passport";
 import initializePassport from "./config/passport.config.js"
-import {environment} from "./config/config.js"
+import { environment } from "./config/config.js"
 import { generateProducts } from './services/mockService.js';
-import { logger, addLogger} from "./utils/logger.js";
+import { logger, addLogger } from "./utils/logger.js";
 import swaggerUi from "swagger-ui-express";
-/* import __dirname from "./utils/utils.js" */
-
+import exphbs from 'express-handlebars';
+import {eq} from './utils/helpers.js'
 import swaggerJSDoc from "swagger-jsdoc";
+import session from "express-session";
 
 
 
 const app = express();
 
 
+// Configurar Handlebars
+const hbs = exphbs.create({
+    helpers: {
+        eq, 
+    },
+});
 
 // View engine
-app.engine('handlebars', engine());
+/* app.engine('handlebars', engine()); */
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', './src/views');
 
@@ -39,12 +47,12 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
     console.log("Connected to MongoDB Atlas");
 });
- /* documentacion Swagger */
+/* documentacion Swagger */
 
 const swaggerOptions = {
-    definition:{
+    definition: {
         openapi: '3.0.1',
-        info:{
+        info: {
             title: "Documentacion ecommerce SucuRex",
             description: "Pensado para documentar los procesos de productos y carrito",
         }
@@ -63,14 +71,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("./src/public"));
 app.use(cookieParser("cookieS3cR3tC0D3"));
-app.use(passport.initialize());
+app.use(session({
+    secret: "secretCoder",
+    resave: true,
+    saveUninitialized: true,
+
+}))
 initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 app.use(addLogger)
 
 // Routers
 const routerproducts = productsRouter;
-const routercarts =  cartsRouter;
+const routercarts = cartsRouter;
 const routerSession = router;
 const routerLogger = loggerRouter;
 
@@ -84,18 +101,18 @@ app.use("/loggerTest", routerLogger)
 app.use("/mail", routerSession)
 
 /* para probar si manda la cookie */
-/* app.get('/ruta', (req, res) => {
-    res.cookie('nombreCookie', 'valorCookie');
-    res.send('Cookie establecida correctamente');
-}); */
+app.get('/ruta', (req, res) => {
+    res.cookie('cookie_de_chocolate', 'valor100pesos',{ httpOnly: true });
+    res.redirect('/current');
+}); 
 // Home del sitio
 app.get("/", (req, res) => {
     res.redirect("/home");
 });
 app.get("/loggerTest", (req, res) => {
     req.logger.error("no se pudo renderizar la pagina");
-    res.send({message: "prueba de logger"})
-}); 
+    res.send({ message: "prueba de logger" })
+});
 app.get("/home", (req, res) => {
     res.render("home", {
         style: "style.css"
@@ -119,6 +136,14 @@ app.use((req, res, next) => {
     });
 });
 
+
+// Ruta para obtener el usuario actual y la cookie
+app.get('/current', (req, res) => {
+    const userCookie = req.cookies.user;
+    res.status(200).json({ message: 'Usuario obtenido correctamente', userCookie });
+    console.log(userCookie)
+});
+
 // Endpoint para generar productos falsos
 app.get('/mockingproducts', (req, res) => {
     const products = generateProducts(100);
@@ -126,6 +151,6 @@ app.get('/mockingproducts', (req, res) => {
 });
 
 const PORT = environment.port || 3000;
-app.listen(PORT , () => {
-    console.log(`Servidor corriendo en el puerto ${PORT }`);
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

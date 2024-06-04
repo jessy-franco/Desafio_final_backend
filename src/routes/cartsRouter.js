@@ -1,6 +1,7 @@
 import Router  from "express";
 import cartsController from "../controllers/cartController.js";
 
+/* import {isAdmin, isPremium} from "../middlewares/auth.middleware.js" */
 
 const cartsRouter = Router();
 
@@ -22,6 +23,7 @@ cartsRouter.put("/:cid", cartsController.updateCartProducts);
 
 /* actualizar la cantidad de productos de un mismo producto */
 cartsRouter.put("/:cid/products/:pid", cartsController.updateProductQuantity);
+
 /* eliminar todos los items del carrito  funciona perfecto por postman*/
 cartsRouter.delete("/:cid", cartsController.clearCart);
 
