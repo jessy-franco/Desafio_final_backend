@@ -5,6 +5,7 @@ import loggerRouter from "./routes/loggerRouter.js"
 import { engine } from 'express-handlebars';
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import userRouter from "./routes/users.js"
 import router from "./routes/sessionRouter.js"
 import viewsRouter from "./routes/viewsRouter.js"
 import passport from "passport";
@@ -90,6 +91,7 @@ const routerproducts = productsRouter;
 const routercarts = cartsRouter;
 const routerSession = router;
 const routerLogger = loggerRouter;
+const routerUser = userRouter;
 
 
 
@@ -99,6 +101,7 @@ app.use("/api/sessions", routerSession)
 app.use("/", viewsRouter)
 app.use("/loggerTest", routerLogger)
 app.use("/mail", routerSession)
+app.use('/api/users', routerUser);
 
 /* para probar si manda la cookie */
 app.get('/ruta', (req, res) => {

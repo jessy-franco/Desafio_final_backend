@@ -30,7 +30,12 @@ const UsersSchema = new mongoose.Schema({
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Cart" // Referencia al modelo de carrito
-    }
+    },
+    documents: [{
+        name: { type: String },
+        reference: { type: String }
+    }],
+    last_connection: { type: Date }
 
 });
 

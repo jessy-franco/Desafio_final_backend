@@ -1,8 +1,7 @@
 import express from "express";
 import passport from "passport";
 import sessionController from "../controllers/SessionControllers.js";
-/* import { requireJwtAuth } from "../utils/jwtUtils.js" */
-import { isAdmin, isPremium } from "../middlewares/auth.middleware.js"
+
 
 const router = express.Router();
 
@@ -21,5 +20,5 @@ router.get("/current", sessionController.ensureAuthenticated, sessionController.
 router.post('/mail', sessionController.forgotPassword);
 router.get("/reset-password", sessionController.renderResetPasswordForm);
 router.post("/reset-password", sessionController.resetPassword);
-router.put('/premium/:uid', isPremium, sessionController.toggleUserRole);
+
 export default router;

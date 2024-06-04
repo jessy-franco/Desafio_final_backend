@@ -8,6 +8,7 @@ import { createHash } from "../utils/utils.js"
 import { logger } from "../utils/logger.js";
 import { isAdmin } from '../middlewares/auth.middleware.js';
 import { validateRegistrationData, validateLoginData } from '../controllers/validators.js'
+import Users from '../daos/models/userSchema.js';
 
 
 const userRepository = new UserRepository();
@@ -52,6 +53,12 @@ const sessionController = {
         if (!user) {
             return res.redirect("/login?error=Usuario_y/o_contraseña_incorrectas");
         }
+        /* last_connection */
+        user = await Users.findOneAndUpdate(
+            { _id: user._id },
+            { last_connection: new Date() },
+            { new: true }
+        );
 
         req.session.user = {
             id: user.id,
@@ -226,24 +233,7 @@ const sessionController = {
     },
 
 
-    toggleUserRole: async (req, res) => {
-        try {
-            const userId = req.params.uid;
-            const newRole = req.body.role; // Puede ser 'user' o 'premium'
-
-            // Verificar si el nuevo rol es válido
-            if (newRole !== 'user' && newRole !== 'premium') {
-                return res.status(400).json({ message: 'Rol de usuario no válido.' });
-            }
-
-            // Actualizar el rol del usuario en la base de datos
-            await userService.updateUserRole(userId, newRole);
-            res.status(200).json({ message: `Rol de usuario actualizado a ${newRole}.` });
-        } catch (error) {
-            console.error('Error al cambiar el rol de usuario:', error);
-            errorHandler({ code: 'TOGGLE_USER_ROLE_ERROR', message: error.message }, req, res);
-        }
-    },
+    
 
 };
 
