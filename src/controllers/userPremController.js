@@ -36,11 +36,14 @@ const UserController = {
                 return res.status(400).json({ message: 'El usuario no ha cargado todos los documentos requeridos' });
             }
 
+            
             // Actualizar el usuario a premium
             user.premium = true;
-            await user.save();
+            if (user && user.role === "premium") {
+                await user.save();
 
-            res.status(200).json({ message: 'Usuario actualizado a premium correctamente' });
+            res.status(200).json({ message: 'Usuario actualizado a premium correctamente' });;
+            }
         } catch (error) {
             console.error('Error al actualizar usuario a premium:', error);
             res.status(500).json({ message: 'Error interno del servidor' });

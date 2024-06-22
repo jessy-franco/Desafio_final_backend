@@ -6,6 +6,7 @@ class UserDTO {
         this.lastName = user.last_name;
         this.age = user.age;
         (this.role = user.role ? user.role : "user");
+        this.cartId = user.cartId;
         
     }
 }

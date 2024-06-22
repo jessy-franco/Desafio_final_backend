@@ -69,3 +69,57 @@ error: Error: Error al completar la compra del carrito. {"error":"Error registra
 error: Este es un mensaje de error
 error: Error: Error al completar la compra del carrito. {"error":"Error registrado"}
 error: Este es un mensaje de error
+error: cart.save is not a function
+error: cart.save is not a function
+error: cart.save is not a function
+error: cart.save is not a function
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: undefined
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: undefined
+error: No se pudo agregar el producto al carrito
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: No se pudo agregar el producto al carrito
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: document must have an _id before saving
+error: No se pudo agregar el producto al carrito
+error: document must have an _id before saving
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: document must have an _id before saving
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: document must have an _id before saving
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: No se pudo agregar el producto al carrito
+error: Cart validation failed: products.0.productId: Cast to ObjectId failed for value "{{productId}}" (type string) at path "productId" because of "BSONError"
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error

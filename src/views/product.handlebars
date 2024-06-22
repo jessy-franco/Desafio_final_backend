@@ -1,44 +1,83 @@
-
 <main class="gridContainer">
-    <div class="gridCard ">
-    {{#if thumbnails}}
-    <center><img src="{{thumbnails}}" /></center>
-    {{/if}}
+    <div class="gridCard">
+        {{#if thumbnails}}
+        <center><img src="{{thumbnails}}" /></center>
+        {{/if}}
 
-    <p>Nombre del producto:{{title}}</p>
-    <p>Categoria:{{category}}</p>
-    <p>Descripcion del producto:{{description}}</p>
-    <p>Codigo del producto:{{code}}</p>
-    {{#if isStock}}
-    <p>Precio: {{price}}</p>
-    <button id="add-to-cart-btn" data-product-id="{{this.code}}">Agregar producto al carrito</button>
-    {{else}}
-    <p>No hay stock del producto</p>
-    {{/if}}
+        <p>Nombre del producto: {{title}}</p>
+        <p>Categoria: {{category}}</p>
+        <p>Descripcion del producto: {{description}}</p>
+        <p>Codigo del producto: {{code}}</p>
+        {{#if isStock}}
+        <p>Precio: {{price}}</p>
+        <form class="d-flex" role="search" action="/api/carts/{{cartId}}/products/{{_id}}" method="post" id="addToCartForm">
+            <input class="form-control me-2" type="number" placeholder="Cantidad" aria-label="Quantity" required name="quantity" min="1" max="{{stock}}" />
+            <button type="submit" id="add-to-cart-btn" data-cart-id="{{cartId}}" data-product-id="{{this._id}}">Agregar al carrito</button>
+        </form>
+        {{else}}
+        <p>No hay stock del producto</p>
+        {{/if}}
     </div>
 </main>
-
-<script src="/js/frontendCart.js"></script>
+{{!-- 
+<script src="/js/frontendCart.js"></script> --}}
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
-    document.getElementById('add-to-cart-btn').addEventListener('click', async function(event) {
-        const productId = this.getAttribute('data-product-id');
-        const response = await fetch('/api/carts/${cart}/products/:' + productId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ quantity: 1 }) 
-        });
+    document.getElementById("add-to-cart-btn").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const cartId = req.session.user.cartId;
+    const productId = this.getAttribute('data-product-id');
+    console.log("cartID:",cartId)
+    console.log("productID:",productId)
+    if (productId) {
+        try {
+            const response = await fetch(`/api/cart/${cartId}/products/${productId}` {
+                method: "POST",
+            });
 
-        if (response.ok) {
-            swal("Producto agregado al carrito!", {
-                icon: "success",
-            });
-        } else {
-            swal("Error al agregar producto al carrito", {
-                icon: "error",
-            });
+            if (response.ok) {
+                swal({
+                    title: "¡Producto agregado al carrito exitosamente!",
+                    icon: "success",
+                    buttons: {
+                        volver: {
+                            text: "Volver a productos",
+                            value: "volver",
+                        },
+                        carrito: {
+                            text: "Ver carrito",
+                            value: "carrito",
+                        }
+                    }
+                }).then((value) => {
+                    switch (value) {
+                        case "volver":
+                            window.location.href = "/api/products";
+                            break;
+                        case "carrito":
+                            window.location.href = `/api/carts${cartId}`;
+                            break;
+                        default:
+                            window.location.href = "/api/products";
+                    }
+                });
+            } else {
+                swal("Error al agregar el producto al carrito", result.message, "error");
+                console.log(result.message); // Podemos ver el mensaje de error
+            }
+        } catch (error) {
+            console.error("Error al agregar el producto al carrito:", error);
+            swal("Error al agregar el producto al carrito", error.message, "error");
+            console.log(error.message);
         }
-    });
+    } else {
+        console.error("No se encontró el ID del producto o del carrito.");
+        console.log("cartID:", cartId);
+        console.log("productID:", productId);
+    }
+});
+
 </script>
+
+
+

@@ -1,0 +1,60 @@
+<div>
+    <h1>Perfil del usuario</h1>
+    <div class="card mx-auto" style="width: 25rem;">
+        <div class="card-body">
+            <h5 class="card-title m-3">Cargá la siguiente documentación</h5>
+            <form id="profile_photo_form" action="/api/users/{{this.userId}}/documents" method="POST"
+                enctype="multipart/form-data">
+                <div class="mb-3 mx-5">
+                    <label class="form-label" for="identificacion">Identificación:</label>
+                    <input class="form-control" type="file" id="identificacion" name="identificacion" />
+                </div>
+                <div class="mb-3 mx-5">
+                    <label class="form-label" for="domicilio">Comprobante de domicilio:</label>
+                    <input class="form-control" type="file" name="domicilio" id="domicilio" />
+                </div>
+                <div class="mb-3 mx-5">
+                    <label class="form-label" for="estadoCuenta">Comprobante estado de cuenta:</label>
+                    <input class="form-control" type="file" name="estadoCuenta" id="estadoCuenta" />
+                </div>
+                <button id="Guardar" type="submit" class="btn btn-success">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    document.getElementById('profile_photo_form').addEventListener('submit', async function (event) {
+        event.preventDefault(); 
+
+        const formData = new FormData(this);
+        const userId = '{{user.id}}'; 
+
+        try {
+            const response = await fetch(`/api/users/${userId}/documents`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                swal({
+                    title: "¡Archivos subidos con éxito!",
+                    text: "Procesaremos su pase a premium.",
+                    icon: "success",
+                    button: "OK",
+                }).then(() => {
+                    window.location.href = '/home'; 
+                });
+            } else {
+                throw new Error('Error en la subida de archivos');
+            }
+        } catch (error) {
+            swal({
+                title: "Error",
+                text: "Error al subir los archivos. Inténtelo de nuevo.",
+                icon: "error",
+                button: "OK",
+            });
+        }
+    });
+</script>

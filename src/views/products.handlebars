@@ -6,6 +6,7 @@
         <h1>¡¡¡Bienvenidx {{user.firstName}} {{user.lastName}} Rol: {{user.role}}!!!</h1>
         <p>Email: {{user.email}}</p>
         <img src="/img/imgPages/dinoJardinero.jpg" alt="imagen de bienvenida" width="50%" height="55%">
+        <div><a href="/api/users/{{user.id}}/documents"><button class="custom-button">Cambiar a premium</button></a></div>
         <div><a href="/api/sessions/logout"><button class="custom-button">Cerrar Sesión</button></a></div>
     </div>
 </section>

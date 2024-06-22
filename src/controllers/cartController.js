@@ -1,8 +1,11 @@
-import cartRepository from '../repositories/cartRepository.js';
+import CartRepository from '../repositories/cartRepository.js';
 import productService from '../services/productService.js';
 import ticketService from '../services/ticketService.js';
 import errorHandler from "../middlewares/errorMiddlewares.js"
 import { logger } from '../utils/logger.js';
+
+
+const cartRepository = new CartRepository();
 
 const cartsController = {
     createCart: async (req, res) => {
@@ -14,6 +17,7 @@ const cartsController = {
             errorHandler({ code: 'INTERNAL_SERVER_ERROR', message: error.message }, req, res);
         }
     },
+
 
     getCartById: async (req, res) => {
         try {
@@ -33,7 +37,24 @@ const cartsController = {
         try {
             const cartId = req.params.cid;
             const productId = req.params.pid;
-            const quantity = req.body.quantity  || 1;
+            const quantity = parseInt(req.body.quantity, 10) || 1; 
+
+            console.log("carrito params:", req.params.cid)
+
+            let cart = await cartRepository.getCartById(cartId);
+            // Check if the product already exists in the cart
+            const existingProductIndex = cart.products.findIndex(product => product.productId.toString() === productId);
+
+            if (existingProductIndex !== -1) {
+                // Update the quantity of the existing product
+                cart.products[existingProductIndex].quantity += quantity;
+            } else {
+                // Add a new product to the cart if it doesn't exist
+                cart.products.push({ productId, quantity });
+            }
+
+            await cartRepository.updateCartProducts(cart);
+
 
             /* const currentUser = req.user; */
 
@@ -46,15 +67,21 @@ const cartsController = {
             if (currentUser.premium === true && productBelongsToUser) {
                 return res.status(403).json({ message: 'No puedes agregar tu propio producto al carrito.' });
             } */
-            let cart = await cartRepository.getCartById(cartId);
+            
 
-            
-            await cartRepository.addProductToCart(cart._id, productId, quantity);
-            
+
+            await cartRepository.addProductToCart(cart, productId, quantity);
+
             // Recarga el carrito después de agregar el producto para obtener la lista actualizada de productos
             cart = await cartRepository.getCartById(cartId);
 
-            return res.status(200).json({ message: 'Product added to cart', cart});
+            return res.status(200).json({ message: 'Product added to cart', cart })
+
+
+            /*  res.render("cart",{
+             cartId: cartId,
+             style: "cart.css"}
+             ) */
 
         } catch (error) {
             console.error("Error al agregar producto al carrito:", error);
@@ -114,9 +141,9 @@ const cartsController = {
         try {
             const cartId = req.params.cid;
             const cart = await cartRepository.getCartById(cartId);
-    
+
             const productsToPurchase = [];
-    
+
             for (const item of cart.products) {
                 const product = await productService.getProductById(item.productId, req, res);
                 if (product.stock >= item.quantity) {
@@ -124,13 +151,13 @@ const cartsController = {
                     productsToPurchase.push(item);
                 }
             }
-    
+
             const ticket = await ticketService.generateTicket(productsToPurchase);
-    
+
             const productsNotPurchased = cart.products.filter(item => !productsToPurchase.some(p => p.productId === item.productId));
-    
+
             await cartRepository.updateCartProducts(cartId, productsNotPurchased);
-    
+
             res.status(200).json({
                 message: "Compra completada con éxito",
                 ticket,
@@ -141,6 +168,6 @@ const cartsController = {
             errorHandler({ code: 'CHECKOUT_ERROR', message: error.message }, req, res);
         }
     },
-}    
+}
 
 export default cartsController;

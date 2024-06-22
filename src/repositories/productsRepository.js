@@ -24,7 +24,7 @@ class ProductRepository {
             const product = await ProductDAO.getById(id);
             return product;
         } catch (error) {
-            errorHandler({ code: 'ERROR_GET_PRODUCT_ID', message: error.message }, req, res);
+            logger.error(error)
         }
     }
 

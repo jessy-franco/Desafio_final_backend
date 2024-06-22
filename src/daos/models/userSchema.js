@@ -27,7 +27,7 @@ const UsersSchema = new mongoose.Schema({
         enum: ["admin", "user","premium"],
         default: "user",
     },
-    cart: {
+    cartId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Cart" // Referencia al modelo de carrito
     },

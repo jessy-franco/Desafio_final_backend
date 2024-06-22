@@ -6,6 +6,13 @@ const userRouter = express.Router();
 
 userRouter.put('/premium/:uid', isPremium, UserController.updateToPremium);
 // Endpoint para subir documentos
-userRouter.post('/:uid/documents', UserController.uploadDocuments);
+userRouter.get('/:uid/documents', UserController.uploadDocuments, (req, res) => {
+    const user = req.session.user;
+    res.render("documents", {
+        user,
+        style: "style.css",
+    });
+});
 
 export default userRouter
+                

@@ -1,11 +1,13 @@
 import Product from "../daos/models/products.schema.js";
 import ProductRepository from '../repositories/productsRepository.js';
+import  CartRepository from '../repositories/cartRepository.js'
+
 
 /* import errorHandler from "../middlewares/errorMiddlewares.js"
 import Users from "../daos/models/userSchema.js" */
 
 const productRepository = new ProductRepository();
-
+const cartRepository = new CartRepository();
 
 const productsController = {
     getAllProducts: async (req, res) => {
@@ -51,7 +53,7 @@ const productsController = {
                 style: "products.css"
             };
 
-            console.log(context);
+            /* console.log(context); */
 
             res.render("products", context);
             
@@ -66,13 +68,31 @@ const productsController = {
         try {
             const id = req.params.id;
             const product = await productRepository.getProductById(id);
-            
+            const cartId = req.session.user.cartId;
+            if (!cartId) {
+            console.error("Error: El cartId no está definido en la sesión del usuario.");
+            return res.status(400).send("El carrito del usuario no está definido.");
+        }
             if (!product) {
                 res.status(404).send("El producto no existe");
                 return;
             }
+            /* const cartId= user.cartId
+            const userCartId = req.session.user.cartId;
+            
+            if (!userCartId) {
+                res.redirect("/login?error=Debe_iniciar_sesión");
+                return;
+            }
+            const cart = await cartRepository.getCartById(userCartId);
+        if (!cart) {
+            res.status(404).send("El carrito no existe");
+            return;
+        } */
 
             res.render("product", {
+                cartId: cartId,
+                _id:product._id,
                 title: product.title,
                 description: product.description,
                 code: product.code,
@@ -86,7 +106,6 @@ const productsController = {
         } catch (error) {
             console.error("Error al obtener el producto por ID:", error);
             res.status(500).send("Error interno del servidor");
-            // Manejar errores generales aquí si es necesario
         }
     },
 
@@ -100,10 +119,9 @@ const productsController = {
                 stock,
                 category,
                 thumbnails,
-                owner // ¿De dónde proviene este campo owner en la solicitud? Asegúrate de manejarlo adecuadamente.
+                owner 
             } = req.body;
 
-            // Aquí deberías validar y procesar la propiedad `owner` según tu lógica de negocio
             
             // Verifica si todos los campos obligatorios están presentes
             if (title && description && code && price && stock && category) {

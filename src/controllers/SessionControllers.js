@@ -9,9 +9,12 @@ import { logger } from "../utils/logger.js";
 import { isAdmin } from '../middlewares/auth.middleware.js';
 import { validateRegistrationData, validateLoginData } from '../controllers/validators.js'
 import Users from '../daos/models/userSchema.js';
-
+import CartModel from'../daos/models/cartSchema.js'
+import CartRepository from '../repositories/cartRepository.js';
+import UserDTO from '../dto/userDto.js';
 
 const userRepository = new UserRepository();
+const cartRepository = new CartRepository();
 
 
 const sessionController = {
@@ -53,24 +56,49 @@ const sessionController = {
         if (!user) {
             return res.redirect("/login?error=Usuario_y/o_contraseña_incorrectas");
         }
-        /* last_connection */
-        user = await Users.findOneAndUpdate(
-            { _id: user._id },
-            { last_connection: new Date() },
-            { new: true }
-        );
+         // Asegúrate de que user._id sea un ObjectId
+    const userId = user.id;
+    if (!userId || typeof userId !== 'object') {
+        return res.redirect("/login?error=ID_de_usuario_inválido");
+    }
 
-        req.session.user = {
-            id: user.id,
-            first_name: user.firstName,
-            last_name: user.lastName,
-            age: user.age,
-            email: user.email,
-            role: user.role
-        };
+    // Actualiza la última conexión
+    const updatedUser = await Users.findOneAndUpdate(
+        { _id: userId },
+        { last_connection: new Date() },
+        { new: true }
+    );
+    console.log("Usuario después de la actualización:", updatedUser);
+
+    // Verifica si el usuario es nulo antes de acceder a sus propiedades
+    if (!updatedUser) {
+        return res.redirect("/login?error=Error_actualizando_la_última_conexión");
+    }
+    let userCart = await cartRepository.getCartById(user.cartId);
+
+    if (!userCart) {
+        userCart = await cartRepository.createCart();
+        
+        user.cartId = userCart._id; // Actualiza el cartId en la instancia de usuario
+        await Users.findByIdAndUpdate(userId, { cartId: userCart._id }); // Actualiza el cartId en el usuario
+        await user.save(); // Guarda los cambios en la instancia de usuario
+        await cartRepository.saveCart(userCart);
+    }
+
+
+    req.session.user = {
+        id: user.id,
+        first_name: user.firstName,
+        last_name: user.lastName,
+        age: user.age,
+        email: user.email,
+        role: user.role,
+        cartId: user.cartId ? user.cartId.toString() : userCart._id.toString()
+    };
+    console.log("userSession:",req.session.user)
     
         if (isAdmin(req, res)) { // Llama a la función isAdmin aquí
-            console.log("Usuario es administrador:", user);
+            console.log("Usuario es administrador:", UserDTO);
             return res.redirect("/api/products?isAdmin");
         } else {
             console.log("Usuario NO es administrador:", user);

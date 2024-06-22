@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const cartSchema = new mongoose.Schema({
-    _id: String,
-    /* _id: mongoose.Schema.Types.ObjectId, */
+
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     products: {
         type: [
             {
-                product: {
+                productId: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: "products"
+                    ref: "Product" 
                 },
                 quantity: {
                     type: Number,

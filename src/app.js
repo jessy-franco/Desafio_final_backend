@@ -18,6 +18,7 @@ import exphbs from 'express-handlebars';
 import {eq} from './utils/helpers.js'
 import swaggerJSDoc from "swagger-jsdoc";
 import session from "express-session";
+import { de } from "@faker-js/faker";
 
 
 
@@ -101,7 +102,7 @@ app.use("/api/sessions", routerSession)
 app.use("/", viewsRouter)
 app.use("/loggerTest", routerLogger)
 app.use("/mail", routerSession)
-app.use('/api/users', routerUser);
+app.use("/api/users", routerUser);
 
 /* para probar si manda la cookie */
 app.get('/ruta', (req, res) => {
