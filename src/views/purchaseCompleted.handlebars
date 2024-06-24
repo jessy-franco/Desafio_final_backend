@@ -1,0 +1,11 @@
+<section>
+    <h1>Compra Completada</h1>
+    <p>{{message}}</p>
+    <h2>Detalles del Ticket</h2>
+    <p>Ticket: {{ticket}}</p>
+    <ul>
+        {{#each productsNotPurchasedIds}}
+        <li>Producto no comprado ID: {{this}}</li>
+        {{/each}}
+    </ul>
+</section>

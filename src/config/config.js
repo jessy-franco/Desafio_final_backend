@@ -27,8 +27,9 @@ export const environment = {
     mongoUrlTest: process.env.MONGO_URL_TEST,
     adminName: process.env.ADMIN_EMAIL,
     adminPassword: process.env.ADMIN_PASSWORD,
-    jwtSecret: process.env.JWT_SECRET,
     NODE_ENV: process.env.NODE_ENV,
     LOG_LEVEL: process.env.LOG_LEVEL,
+    USERMAIL: process.env.USERMAIL,
+    PASSNODEMAILER: process.env.PASSNODEMAILER,
 };
 

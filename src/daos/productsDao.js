@@ -40,15 +40,44 @@ class ProductDAO {
     static async remove(id) {
         try {
             const deletedProduct = await Product.findByIdAndDelete(id);
+
             if (!deletedProduct) {
                 errorHandler({ code: 'ERROR_DELETE', message: error.message }, req, res);
             }
+            
             return deletedProduct.toObject();
         } catch (error) {
             console.error("Error al eliminar producto:", error);
             errorHandler({ code: 'ERROR_DELETE', message: error.message }, req, res);
         }
     }
+
+    static async updateStock(productId, newStock) {
+        try {
+            const updatedProduct = await Product.findByIdAndUpdate(
+                productId,
+                { stock: newStock },
+                { new: true }
+            ).lean();
+
+            if (!updatedProduct) {
+                throw new Error("Producto no encontrado");
+            }
+            return updatedProduct;
+        } catch (error) {
+            console.error("Error al actualizar stock en ProductDAO.updateStock:", error);
+            errorHandler({ code: 'ERROR_DELETE', message: error.message }, req, res);
+        }
+    }
+    async getProdOwner (owner){
+        try {
+            return await Product.find({ owner: owner }).lean();
+        } catch (error) {
+            console.error('Error al obtener productos por owner:', error);
+            logger.error(error);
+        }
+    }
+
 }
 
 export default ProductDAO;

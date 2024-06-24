@@ -123,3 +123,73 @@ error: Error: Error al agregar un producto al carrito. {"error":"Error registrad
 error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
 error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
 error: Este es un mensaje de error
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: No se pudo agregar el producto al carrito
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required., products.1.price: Path `price` is required., products.1.title: Path `title` is required., products.2.price: Path `price` is required., products.2.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required., products.1.price: Path `price` is required., products.1.title: Path `title` is required., products.2.price: Path `price` is required., products.2.title: Path `title` is required., products.3.price: Path `price` is required., products.3.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required., products.1.price: Path `price` is required., products.1.title: Path `title` is required., products.2.price: Path `price` is required., products.2.title: Path `title` is required., products.3.price: Path `price` is required., products.3.title: Path `title` is required.
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Cast to ObjectId failed for value "{{cartId}}" (type string) at path "_id" for model "Cart"
+error: Cast to ObjectId failed for value "{{cartId}}" (type string) at path "_id" for model "Cart"
+error: Cast to ObjectId failed for value "{{cartId}}" (type string) at path "_id" for model "Cart"
+error: Cast to ObjectId failed for value "{{cartId}}" (type string) at path "_id" for model "Cart"
+error: Cast to ObjectId failed for value "{{cartId}}" (type string) at path "_id" for model "Cart"
+error: Cast to ObjectId failed for value "{{cartId}}" (type string) at path "_id" for model "Cart"
+error: Cart validation failed: products.0.price: Path `price` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required., products.1.price: Path `price` is required., products.1.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required.
+error: Cart validation failed: products.0.price: Path `price` is required., products.0.title: Path `title` is required.
+error: Error: Error al completar la compra del carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error al generar el ticket de compra: Ticket validation failed: amount: Cast to Number failed for value "[]" (type Array) at path "amount"
+error: Error: Error al actualizar el stock del producto {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error: Error al actualizar el stock del producto {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Cart validation failed: products.0.quantity: Cast to Number failed for value "NaN" (type number) at path "quantity"
+error: Error: Error al agregar un producto al carrito. {"error":"Error registrado"}
+error: Este es un mensaje de error
+error: Cart validation failed: products.1.quantity: Cast to Number failed for value "NaN" (type number) at path "quantity"
+error: Cart validation failed: products.0.quantity: Cast to Number failed for value "NaN" (type number) at path "quantity"
+error: Cart validation failed: products.1.quantity: Cast to Number failed for value "NaN" (type number) at path "quantity"
+error: Error al crear producto
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}
+error: undefined {"kind":"ObjectId","path":"_id","reason":{},"stringValue":"\"manage\"","value":"manage","valueType":"string"}

@@ -6,16 +6,17 @@
             <form id="profile_photo_form" action="/api/users/{{this.userId}}/documents" method="POST"
                 enctype="multipart/form-data">
                 <div class="mb-3 mx-5">
-                    <label class="form-label" for="identificacion">Identificación:</label>
-                    <input class="form-control" type="file" id="identificacion" name="identificacion" />
+                    <label class="form-label" for="identificacion" >Identificación:</label>
+                    <input class="form-control" type="file" id="identificacion" name="identificacion" required />
                 </div>
                 <div class="mb-3 mx-5">
                     <label class="form-label" for="domicilio">Comprobante de domicilio:</label>
-                    <input class="form-control" type="file" name="domicilio" id="domicilio" />
+                    <input class="form-control" type="file" name="domicilio" id="domicilio" required />
+                </div>
                 </div>
                 <div class="mb-3 mx-5">
                     <label class="form-label" for="estadoCuenta">Comprobante estado de cuenta:</label>
-                    <input class="form-control" type="file" name="estadoCuenta" id="estadoCuenta" />
+                    <input class="form-control" type="file" name="estadoCuenta" id="estadoCuenta" required/>
                 </div>
                 <button id="Guardar" type="submit" class="btn btn-success">Guardar</button>
             </form>

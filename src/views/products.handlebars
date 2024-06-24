@@ -10,12 +10,19 @@
         <div><a href="/api/sessions/logout"><button class="custom-button">Cerrar Sesión</button></a></div>
     </div>
 </section>
+{{#if isPremium}}
+<p><a href="/api/products/new"><button class="custom-button">Agregar producto (premium)</button></a></p>
+<p><a href="/api/products/manage"><button class="custom-button">Ir a vista "Borrar productos"(premium)</button></a></p>
+{{/if}}
 
 {{#if isAdmin}}
 <div>
     <p><a href="/api/products/new"><button class="custom-button">Agregar producto (admin)</button></a></p>
+    <p><a href="/api/users/manage"class="custom-button">Ir a page manager</a></p>
+    <p><a href="/api/products/manage"><button class="custom-button">Ir a vista "Borrar productos"(premium)</button></a></p>
 </div>
 {{/if}}
+
 {{/if}}
 
 <h2>Nuestros productos</h2>

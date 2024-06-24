@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema({
     },
     thumbnails: {
         type: [String],
-         // Cambiado a un array de String
+        
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,

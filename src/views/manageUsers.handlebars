@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Usuarios</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+    <h1>Administrar Usuarios</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.email}}</td>
+                <td>
+                    <select id="role-{{this._id}}" name="newRole">
+                        <option value="user" {{#if (eq this.role 'user' )}}selected{{/if}}>Usuario</option>
+                        <option value="admin" {{#if (eq this.role 'admin' )}}selected{{/if}}>Administrador</option>
+                        <option value="premium" {{#if (eq this.role 'premium' )}}selected{{/if}}>Premium</option>
+                    </select>
+                    <button onclick="changeRole('{{this._id}}')">Actualizar</button>
+                </td>
+                <td>
+                    <button onclick="deleteUser('{{this._id}}')">Eliminar</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <div>
+        <label for="inactive-date">Eliminar usuarios inactivos previos a:</label>
+        <input type="date" id="inactive-date-user" name="inactive-date-user" required>
+        <button onclick="deleteInactiveUs()">Eliminar</button>
+    </div>
+
+    <script>
+        async function deleteInactiveUs() {
+            try {
+                const date = document.getElementById('inactive-date-user').value;
+
+                if (!date) {
+                    alert("Por favor, ingrese una fecha correctamente.");
+                    return;
+                }
+
+                const response = await fetch(`/api/users/inactive`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ date: date })
+                });
+
+                if (!response.ok) {
+                    logger.error('Error al eliminar usuarios inactivos');
+                    return;
+                }
+
+                alert('Usuarios inactivos eliminados');
+            } catch (error) {
+                console.error('Error al realizar la solicitud para eliminar usuarios inactivos:', error);
+            }
+        }
+
+
+        async function changeRole(uid) {
+            try {
+                const newRole = document.getElementById(`role-${uid}`).value;
+
+                const response = await fetch(`/api/users/rol`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ uid: uid, newRole: newRole })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al cambiar el rol del usuario');
+                }
+
+                alert('Rol del usuario actualizado');
+                window.location.reload();
+            } catch (error) {
+                console.error('Error al realizar la solicitud para cambiar el rol del usuario:', error);
+            }
+        }
+
+        async function deleteUser(uid) {
+            try {
+                const response = await fetch(`/api/users/${uid}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al eliminar el usuario');
+                }
+
+                alert('Usuario eliminado');
+                window.location.reload();
+            } catch (error) {
+                console.error('Error al realizar la solicitud para eliminar el usuario:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>

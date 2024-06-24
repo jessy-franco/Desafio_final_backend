@@ -1,5 +1,8 @@
-import Ticket from '../daos/models/ticket.Schema.js'; // Importar el modelo Ticket
-import errorHandler from "../middlewares/errorMiddlewares.js"
+
+
+import Ticket from '../daos/models/ticket.Schema.js';
+import { logger } from '../utils/logger.js';
+
 
 const ticketService = {
     // Función para generar un ticket de compra
@@ -17,7 +20,7 @@ const ticketService = {
             return savedTicket;
         } catch (error) {
             console.error('Error al generar el ticket de compra:', error);
-            errorHandler({ code: 'ERROR_CREATE_TICKET', message: error.message }, req, res);
+            logger.error('Error al generar el ticket de compra: ' + error.message); // Propaga el error
         }
     }
 };

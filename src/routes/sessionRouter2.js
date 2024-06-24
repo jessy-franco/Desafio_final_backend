@@ -1,7 +1,7 @@
+
 import express from "express";
 import passport from "passport";
-import sessionController from "../controllers/SessionControllers.js";
-
+import sessionController from "../controllers/SessionController2.js";
 
 const router = express.Router();
 

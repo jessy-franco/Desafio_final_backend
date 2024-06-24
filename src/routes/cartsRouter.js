@@ -1,16 +1,21 @@
-import Router  from "express";
+import express from "express";
 import cartsController from "../controllers/cartController.js";
+import { isLoggedIn } from "../middlewares/sessionLoginCartId.js";
 
 /* import {isAdmin, isPremium} from "../middlewares/auth.middleware.js" */
 
-const cartsRouter = Router();
+const cartsRouter = express.Router();
 
 
 /* Creación de un nuevo carrito*/
 cartsRouter.post("/", cartsController.createCart);
 
-/* Crear un nuevo carrito si no existe y mostrar el carrito si existe */
-cartsRouter.get("/:cid", cartsController.getCartById);
+cartsRouter.get("/", isLoggedIn, (req, res) => {
+    res.send('Especifica un ID de carrito.');
+});
+
+cartsRouter.get("/:cid", isLoggedIn, cartsController.getCartById);
+
 
 /* Añadir un producto al carrito seleccionado*/
 cartsRouter.post("/:cid/products/:pid", cartsController.addProductToCart)

@@ -1,11 +1,13 @@
 import CartRepository from '../repositories/cartRepository.js';
 import productService from '../services/productService.js';
 import ticketService from '../services/ticketService.js';
+import Ticket from '../daos/models/ticket.Schema.js'
 import errorHandler from "../middlewares/errorMiddlewares.js"
 import { logger } from '../utils/logger.js';
-
+import ProductRepository from '../repositories/productsRepository.js';
 
 const cartRepository = new CartRepository();
+const productRepository = new ProductRepository();
 
 const cartsController = {
     createCart: async (req, res) => {
@@ -21,44 +23,71 @@ const cartsController = {
 
     getCartById: async (req, res) => {
         try {
+            // Verificar si la sesión del usuario está definida
+            if (!req.session || !req.session.user) {
+                console.error("Error: La sesión del usuario no está definida.");
+                req.session.destroy();
+                return res.redirect("/login?Tu_sesión_ha_expirado. Inicia_sesión_nuevamente");
+            }
+
+            // Obtener el cartId de los parámetros de la ruta
             const cartId = req.params.cid;
+            if (!cartId) {
+                return res.status(400).send('ID de carrito no proporcionado');
+            }
+
+            // Obtener el carrito de la base de datos
             const cart = await cartRepository.getCartById(cartId);
             if (!cart) {
                 return res.status(404).send('Carrito no encontrado');
             }
-            res.status(200).send(cart);
+
+            // Renderizar la vista del carrito
+            res.render("carts2", {
+                cartId,
+                style: "style.css",
+                products: cart.products,
+            });
+
         } catch (error) {
             console.error("Error al obtener carrito por ID:", error);
-            logger.error(error)
+            res.status(500).send("Error interno del servidor");
         }
     },
+
 
     addProductToCart: async (req, res) => {
         try {
             const cartId = req.params.cid;
             const productId = req.params.pid;
-            const quantity = parseInt(req.body.quantity, 10) || 1; 
+            const quantity = parseInt(req.body.quantity, 10) || 1;
 
             console.log("carrito params:", req.params.cid)
 
             let cart = await cartRepository.getCartById(cartId);
-            // Check if the product already exists in the cart
+
             const existingProductIndex = cart.products.findIndex(product => product.productId.toString() === productId);
 
             if (existingProductIndex !== -1) {
-                // Update the quantity of the existing product
-                cart.products[existingProductIndex].quantity += quantity;
-            } else {
-                // Add a new product to the cart if it doesn't exist
-                cart.products.push({ productId, quantity });
+                const existingQuantity = cart.products[existingProductIndex].quantity;
+                console.log("Existing quantity:", existingQuantity);
+                cart.products[existingProductIndex].quantity += quantity - 1;
+            }
+            else {
+                const product = await productRepository.getProductById(productId);
+                console.log(product)
+
+                const cartQuantity = quantity || 1; // Get quantity from request body or default to 1
+                const adjustedQuantity = cartQuantity - 1;
+
+
+                cart.products.push({ productId, title: product.title, adjustedQuantity, price: product.price, });
             }
 
-            await cartRepository.updateCartProducts(cart);
+            await cart.save();
+            const currentUser = req.user;
 
-
-            /* const currentUser = req.user; */
-
-            /* if (!currentUser) {
+            if (!currentUser) {
                 return res.status(401).json({ message: 'Usuario no autenticado.' });
             }
 
@@ -66,22 +95,17 @@ const cartsController = {
 
             if (currentUser.premium === true && productBelongsToUser) {
                 return res.status(403).json({ message: 'No puedes agregar tu propio producto al carrito.' });
-            } */
-            
+            }
+
 
 
             await cartRepository.addProductToCart(cart, productId, quantity);
 
-            // Recarga el carrito después de agregar el producto para obtener la lista actualizada de productos
             cart = await cartRepository.getCartById(cartId);
 
-            return res.status(200).json({ message: 'Product added to cart', cart })
+            return res.redirect("/api/products/?Se_agrego_un__producto_al_carrito_con_exito");
+            /* return res.status(200).json({ message: 'Product added to cart', cart}); */
 
-
-            /*  res.render("cart",{
-             cartId: cartId,
-             style: "cart.css"}
-             ) */
 
         } catch (error) {
             console.error("Error al agregar producto al carrito:", error);
@@ -143,31 +167,47 @@ const cartsController = {
             const cart = await cartRepository.getCartById(cartId);
 
             const productsToPurchase = [];
+            let totalAmount = 0;
 
             for (const item of cart.products) {
                 const product = await productService.getProductById(item.productId, req, res);
                 if (product.stock >= item.quantity) {
                     await productService.updateProductStock(product._id, product.stock - item.quantity, req, res);
+                    totalAmount += item.price * item.quantity;
                     productsToPurchase.push(item);
+                } else {
+                    // Si no hay suficiente stock, agregar a productos no comprados
+                    console.log(`Producto ${product.title} no comprado debido a stock insuficiente.`);
                 }
             }
 
-            const ticket = await ticketService.generateTicket(productsToPurchase);
+            // Verifica que totalAmount sea un número válido
+            if (typeof totalAmount !== 'number') {
+                logger.error('El monto total no es un número válido.');
+            }
 
-            const productsNotPurchased = cart.products.filter(item => !productsToPurchase.some(p => p.productId === item.productId));
+            // Generar ticket solo si hay productos comprados
+            let ticket = null;
+            if (productsToPurchase.length > 0) {
+                ticket = await ticketService.generateTicket(totalAmount, req.session.user.email);
 
-            await cartRepository.updateCartProducts(cartId, productsNotPurchased);
+                const productsNotPurchased = cart.products.filter(item => !productsToPurchase.some(p => p.productId === item.productId));
 
-            res.status(200).json({
-                message: "Compra completada con éxito",
-                ticket,
-                productsNotPurchasedIds: productsNotPurchased.map(item => item.productId)
-            });
+                await cartRepository.updateCartProducts(cartId, productsNotPurchased);
+
+                // Renderizar la vista de compra completada
+                res.render("purchaseCompleted", {
+                    message: "Compra completada con éxito",
+                    ticket,
+                    productsNotPurchasedIds: productsNotPurchased.map(item => item.productId)
+                });
+
+            }
         } catch (error) {
             console.error("Error al completar la compra del carrito:", error);
             errorHandler({ code: 'CHECKOUT_ERROR', message: error.message }, req, res);
-        }
-    },
-}
 
+        }
+    }
+}
 export default cartsController;

@@ -52,13 +52,13 @@
                 }).then((value) => {
                     switch (value) {
                         case "volver":
-                            window.location.href = "/api/products";
+                            window.location.href = "/api/products/";
                             break;
                         case "carrito":
-                            window.location.href = `/api/carts${cartId}`;
+                            window.location.href = `/api/carts${cartId}/`;
                             break;
                         default:
-                            window.location.href = "/api/products";
+                            window.location.href = "/api/products/";
                     }
                 });
             } else {

@@ -32,7 +32,7 @@ class ProductRepository {
         try {
             await ProductDAO.add(productData);
         } catch (error) {
-            errorHandler({ code: 'PRODUCT_CREATE_ERROR', message: error.message }, req, res);
+            logger.error("Error al crear producto")
         }
     }
 
@@ -56,6 +56,15 @@ class ProductRepository {
             return deletedProduct;
         } catch (error) {
             errorHandler({ code: 'ERROR_DELETE', message: error.message }, req, res);
+        }
+    }
+
+    async getProductsByOwner (ownerId){
+        try {
+            return await ProductDAO.getProdOwner(ownerId)
+        } catch (error) {
+            console.error('Error al obtener productos por owner:', error);
+            logger.error(error);
         }
     }
 }

@@ -1,0 +1,33 @@
+<section class="cart-container">
+    <h1>Carrito</h1>
+    {{#if cartId}}
+    <div class="cart-items">
+        {{#if products.length}}
+        <ul>
+            <h2>ID del Carrito: {{cartId}}</h2>
+            {{#each products}}
+            <li>
+                <p>Product ID: {{this.productId}}</p>
+                <p>Nombre del producto: {{this.title}}</p>
+                <p>Cantidad: {{this.quantity}}</p>
+                <p>Precio: {{this.price}}</p>
+                <button class="remove-btn" data-product-id="{{this.productId}}">Eliminar</button>
+            </li>
+            {{/each}}
+        </ul>
+        <form action="/api/carts/{{cartId}}/purchase" method="POST">
+            <button type="submit" class="purchase-btn">Finalizar Compra</button>
+        </form>
+        {{else}}
+        <p class="empty-cart-message">No hay productos en el carrito.</p>
+        {{/if}}
+    </div>
+    {{else}}
+    <p>Inicia sesión para acceder al carrito.</p>
+    {{/if}}
+</section>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    const cartId = '{{cartId}}'; // Asigna el valor de cartId al JavaScript
+</script>
+<script src="/js/frontCart.js"></script>

@@ -6,6 +6,35 @@ class UserRepository {
     constructor() {
         this.usersDao = new UsersDao();
     }
+
+    async getAllUsers() {
+        return await this.usersDao.getAllUsers()
+    }
+
+    async getInactiveUsers(days) {
+        const thresholdDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        return await this.usersDao.getAllUsers({
+            where: {
+                lastConnection: {
+                    [Op.lt]: thresholdDate
+                }
+            }
+        });
+    }
+
+    async deleteInactiveUsers(days) {
+        const thresholdDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        return await this.usersDao.destroy(thresholdDate);
+    }
+
+    async updateUserRole(uid, newRole) {
+        return await this.usersDao.updateUserRole(uid, newRole);
+    }
+
+    async deleteUser(uid) {
+        return await this.usersDao.deleteUser(uid);
+    }
+
     async createUser(userData) {
         return await this.usersDao.insert(userData.first_name, userData.last_name, userData.age, userData.email, userData.password);
     }

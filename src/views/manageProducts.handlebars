@@ -1,0 +1,57 @@
+<!-- views/manageProducts.handlebars -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionar Productos</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+    <h1>Gestionar Productos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Código</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Categoría</th>
+                <th>Thumbnails</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#if products}}
+            {{#each products}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.code}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.stock}}</td>
+                <td>{{this.category}}</td>
+                <td>
+                    {{#each this.thumbnails}}
+                    <img src="{{this}}" alt="Thumbnail" style="width: 50px;">
+                    {{/each}}
+                </td>
+                <td>
+                    <form action="/api/products/{{this._id}}/update" method="POST">
+                        <button type="submit">Actualizar</button>
+                    </form>
+                    <form action="/api/products/{{this._id}}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {{/each}}
+            {{/if}}
+        </tbody>
+    </table>
+</body>
+
+</html>

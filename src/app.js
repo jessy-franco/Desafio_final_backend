@@ -6,7 +6,7 @@ import { engine } from 'express-handlebars';
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/users.js"
-import router from "./routes/sessionRouter.js"
+import router from "./routes/sessionRouter2.js"
 import viewsRouter from "./routes/viewsRouter.js"
 import passport from "passport";
 import initializePassport from "./config/passport.config.js"
@@ -15,11 +15,12 @@ import { generateProducts } from './services/mockService.js';
 import { logger, addLogger } from "./utils/logger.js";
 import swaggerUi from "swagger-ui-express";
 import exphbs from 'express-handlebars';
-import {eq} from './utils/helpers.js'
+import { eq } from './utils/helpers.js'
 import swaggerJSDoc from "swagger-jsdoc";
 import session from "express-session";
-import { de } from "@faker-js/faker";
-
+import MongoStore from "connect-mongo";
+import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access';
+import Handlebars from 'handlebars';    
 
 
 const app = express();
@@ -27,16 +28,19 @@ const app = express();
 
 // Configurar Handlebars
 const hbs = exphbs.create({
+    handlebars: allowInsecurePrototypeAccess(Handlebars),
     helpers: {
-        eq, 
+        eq,
     },
+    defaultLayout: 'main',
+    extname: '.handlebars',
 });
 
 // View engine
 /* app.engine('handlebars', engine()); */
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.set('views', './src/views');
+app.set('views', './src/views', './custom-views-path');
 
 
 
@@ -77,6 +81,13 @@ app.use(session({
     secret: "secretCoder",
     resave: true,
     saveUninitialized: true,
+    store: MongoStore.create({
+        mongoUrl: environment.mongoUrl,
+        ttl: 14 * 24 * 60 * 60,
+    }),
+    cookie: {
+        maxAge: 3600000
+    }
 
 }))
 initializePassport();
@@ -106,19 +117,27 @@ app.use("/api/users", routerUser);
 
 /* para probar si manda la cookie */
 app.get('/ruta', (req, res) => {
-    res.cookie('cookie_de_chocolate', 'valor100pesos',{ httpOnly: true });
+    res.cookie('cookie_de_chocolate', 'valor100pesos', { httpOnly: true });
     res.redirect('/current');
-}); 
+});
 // Home del sitio
 app.get("/", (req, res) => {
     res.redirect("/home");
+
 });
+
 app.get("/loggerTest", (req, res) => {
     req.logger.error("no se pudo renderizar la pagina");
     res.send({ message: "prueba de logger" })
 });
 app.get("/home", (req, res) => {
+    let cartId = null;
+    if (req.session.user) {
+        cartId = req.session.user.cartId; // Retrieve cartId from session if logged in
+    }
+
     res.render("home", {
+        cartId,
         style: "style.css"
     });
 });

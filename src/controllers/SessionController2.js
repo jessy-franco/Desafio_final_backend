@@ -1,17 +1,16 @@
 
 import UserRepository from '../repositories/userRepository.js';
 import passport from "passport";
-import transport from "../utils/nodemailer.js";
 import { generateTokenForPasswordReset } from "../utils/tokenPassUtils.js"
 import { environment } from "../config/config.js";
 import { createHash } from "../utils/utils.js"
 import { logger } from "../utils/logger.js";
 import { isAdmin } from '../middlewares/auth.middleware.js';
-import { validateRegistrationData, validateLoginData } from '../controllers/validators.js'
+import { validateRegistrationData, validateLoginData } from './validators.js'
 import Users from '../daos/models/userSchema.js';
-import CartModel from'../daos/models/cartSchema.js'
 import CartRepository from '../repositories/cartRepository.js';
 import UserDTO from '../dto/userDto.js';
+import {nodemailerService} from'../utils/nodemailer.js'
 
 const userRepository = new UserRepository();
 const cartRepository = new CartRepository();
@@ -136,13 +135,6 @@ const sessionController = {
             }
             
         })
-        /* req.logout((err) => {
-            if (err) {
-                logger.error("Error during logout:", err);
-                return res.redirect("/api/products?cierre_de_sesion_ok");
-            }
-            return res.redirect("/api/products?logout=true");
-        }); */
     },
     authenticateWithGithub: (req, res, next) => {
         // Verificar si el usuario ya está autenticado
@@ -187,7 +179,7 @@ const sessionController = {
 
     forgotPassword: async (req, res) => {
         try {
-            // Verifica si se proporciona un correo electrónico
+            
             const email = req.body.email;
 
             console.log('Correo electrónico recibido:', email);
@@ -197,34 +189,35 @@ const sessionController = {
             }
 
             // Genera el token para restablecer la contraseña
-            generateTokenForPasswordReset(req, email); // Esta función debe almacenar el token en la sesión
-
-        // Configura las opciones del correo electrónico
-        const token = req.session.resetToken.token;
+            const token = generateTokenForPasswordReset(req, email); // Esta función debe almacenar el token en la sesión
 
             // Configura las opciones del correo electrónico
 
-            const result = await transport.sendMail({
-                from: 'SucuRex@gmail.com',
-                to: email,
-                subject: 'Recuperación de Contraseña',
-                html: `
+            const result = await nodemailerService.sendMail(
+                email,
+                'Recuperación de Contraseña',
+                '',
+                `
                 <div>
-                    Haga clic en el siguiente enlace para restablecer su contraseña: <a href="http://${environment.HOST}:${environment.port}/resetPassword?token=${token}">Restablecer Contraseña</a>. El enlace expirará en 1 hora.
+                    Haga clic en el siguiente enlace para restablecer su contraseña: 
+                    <a href="http://${environment.HOST}:${environment.port}/resetPassword?token=${token}">
+                        Restablecer Contraseña
+                    </a>. El enlace expirará en 1 hora.
                     <img src="cid:dinoLogin"/>
                 </div>`,
-                attachments: [{
+                [{
                     filename: "dinoLogin.jpg",
                     path: "/img/imgPages/dinoLogin.jpg",
                     cid: "dinoLogin"
                 }]
-            });
-
+            );
+            console.log('Correo enviado: ', result); 
             res.send({ status: "success", result: "Email sent" });
         } catch (error) {
-            logger.error('Error al enviar el correo de recuperación de contraseña:', error);
-            let msg = "Error al enviar el correo de recuperación de contraseña";
-            res.render("login", { msg });
+            console.log('Error al enviar el correo de recuperación de contraseña', error);
+            
+            return res.redirect("/login?Error_al_ enviar_mail");
+            
         }
     },
 
@@ -266,7 +259,3 @@ const sessionController = {
 };
 
 export default sessionController;
-
-
-
-
